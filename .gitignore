@@ -1,3 +1,30 @@
+# Virtual Environment
+venv/
+env/
+ENV/
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Data files (optional - depends if you want to commit data)
+*.csv
+data/
+
+# Output files
+failure_imbalance_comparison.csv
+
+# IDE
+.vscode/
+.idea/
+
+# OS
 .DS_Store
-
-
+Thumbs.db
