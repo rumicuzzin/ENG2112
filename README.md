@@ -1,144 +1,177 @@
-# MillMate G17 - Predictive Maintenance ML Pipeline
+# ENG2112 - Machine Learning for Predictive Maintenance
 
-A machine learning project for predictive maintenance using the AI4I 2020 dataset. This notebook implements multiple classification strategies to predict product quality and machine failures.
+A structured Python implementation of machine learning models for predictive maintenance using the AI4I 2020 dataset. This project predicts machine failures using multiple classification strategies to handle extreme class imbalance.
 
-## Project Overview
+## 📋 Project Overview
 
-This project tackles two classification problems:
+**Dataset**: AI4I 2020 Predictive Maintenance Dataset  
+**Task**: Binary classification of machine failures (~3.4% failure rate)  
+**Features**: Sensor readings (temperature, speed, torque, tool wear)
 
-1. **Product Quality Classification** - Predicting product type: Low (L), Medium (M), or High (H) quality
-2. **Machine Failure Prediction** - Predicting whether a machine will fail based on sensor readings
-
-## Prerequisites
-
-- Python 3.11 or higher
-- VS Code with Python extension
-- Jupyter extension for VS Code
-
-## Setup Instructions
-
-### 1. Project Structure
-
-Ensure your directory looks like this:
+## 🗂️ Project Structure
 
 ```
-project/
-├── README.md
+ENG2112/
+├── src/
+│   ├── config.py                    # Configuration settings
+│   ├── data/
+│   │   ├── __init__.py
+│   │   └── preprocessing.py         # Data loading & preprocessing
+│   ├── models/
+│   │   ├── __init__.py
+│   │   └── failure_predictor.py     # Model definitions
+│   ├── evaluation/
+│   │   ├── __init__.py
+│   │   └── metrics.py               # Evaluation functions
+│   └── utils/
+│       ├── __init__.py
+│       └── visualization.py         # Plotting utilities
+├── scripts/
+│   └── train_failure_model.py       # Main training script
+├── notebooks/
+│   └── MillMate_G17_ENGG2112.ipynb  # Original notebook (reference)
+├── data/
+│   └── ai4i2020.csv
+├── outputs/
+│   ├── models/                      # Saved models
+│   ├── results/                     # CSV results
+│   └── figures/                     # Plots
 ├── requirements.txt
-├── MillMate_G17_ENGG2112.ipynb
-└── data/
-    └── ai4i2020.csv
+└── README.md
 ```
 
-### 2. Create Virtual Environment
+## 🚀 Quick Start
 
-**Mac/Linux:**
+### 1. Setup Environment
+
 ```bash
+# Create virtual environment
 python3 -m venv venv
-source venv/bin/activate
-```
+source venv/bin/activate  # On Windows: venv\Scripts\activate
 
-**Windows:**
-```bash
-python -m venv venv
-venv\Scripts\activate
-```
-
-### 3. Install Dependencies
-
-```bash
+# Install dependencies
 pip install -r requirements.txt
 ```
 
-### 4. Run in VS Code
+### 2. Verify Data
 
-**Option A: Open the notebook directly**
-1. Open `MillMate_G17_ENGG2112.ipynb` in VS Code
-2. Select your virtual environment kernel (top right)
-3. Run All Cells
+Ensure your dataset is at: `data/ai4i2020.csv`
 
-**Option B: Launch Jupyter from terminal**
+### 3. Run Training Pipeline
+
 ```bash
-jupyter lab
-```
-Then open the notebook in your browser at `http://localhost:8888`
-
-## Dataset
-
-Place your dataset file at: `data/ai4i2020.csv`
-
-**Features:**
-- Air temperature [K]
-- Process temperature [K]
-- Rotational speed [rpm]
-- Torque [Nm]
-- Tool wear [min]
-
-## Dependencies
-
-The `requirements.txt` file includes:
-
-```
-numpy>=1.24.0
-pandas>=2.0.0
-scikit-learn>=1.3.0
-imbalanced-learn>=0.11.0
-matplotlib>=3.7.0
-jupyterlab>=4.0.0
-ipykernel>=6.25.0
+python scripts/train_failure_model.py
 ```
 
-## Notebook Structure
+This will:
+- Load and preprocess the data
+- Train 6 different model strategies
+- Perform 5-fold cross-validation
+- Evaluate on test set
+- Generate performance visualizations
+- Save results to `outputs/`
 
-### Cell 1: Data Preprocessing
-- Loads the dataset
-- Checks for missing values
-- Encodes product quality labels
-- Applies Z-score normalization
+## 🎯 Model Strategies
 
-### Cell 2: Multiclass Quality Prediction
-- Implements 5 strategies for handling imbalanced classes
-- Compares models using cross-validation
-- **Known Issue:** Error with `average_precision_score` for multiclass - needs fixing
+The project implements 6 strategies for handling class imbalance:
 
-### Cell 3: Binary Machine Failure Prediction
-- Predicts machine failures (3.4% failure rate)
-- Tests 6 different imbalance handling strategies
-- Outputs comparison table and visualizations
+1. **BalancedRandomForestClassifier** ⭐ (Recommended)
+2. **EasyEnsembleClassifier** ⭐ (Recommended)
+3. **SMOTE + Logistic Regression**
+4. **ADASYN + Logistic Regression**
+5. **Class-Weighted Logistic Regression**
+6. **Class-Weighted Random Forest**
 
-## Output Files
+## 📊 Evaluation Metrics
 
-After running the notebook:
-- `failure_imbalance_comparison.csv` - Model performance comparison
+Models are evaluated using:
+- **ROC-AUC**: Overall discriminative ability
+- **PR-AUC**: Performance on imbalanced data (primary metric)
+- **F1 Score**: Balance of precision and recall
+- **MCC**: Matthews Correlation Coefficient
+- **Precision & Recall**: At optimal threshold
 
-## Troubleshooting
+## ⚙️ Configuration
 
-### File Not Found Error
-
-If you get a file not found error, update the path in the notebook:
+Modify settings in `src/config.py`:
 
 ```python
-df = pd.read_csv("data/ai4i2020.csv")
+# Key parameters
+TEST_SIZE = 0.2           # Train/test split ratio
+CV_FOLDS = 5              # Cross-validation folds
+RANDOM_STATE = 42         # Random seed
+THRESHOLD_PREFERENCE = 'f1'  # Options: 'f1', 'recall', 'precision'
 ```
 
-### Kernel Not Found
+## 📈 Outputs
 
-Make sure your virtual environment is activated and selected as the kernel in VS Code.
+After running the pipeline, check:
 
-### Missing Packages
+- **Results**: `outputs/results/failure_imbalance_comparison.csv`
+- **Figures**: 
+  - `outputs/figures/pr_curves_top3.png`
+  - `outputs/figures/roc_curves_top3.png`
+  - `outputs/figures/model_comparison.png`
 
-If imports fail, reinstall dependencies:
+## 🔧 Usage Examples
+
+### Run with Custom Configuration
+
+```python
+from src import config
+from src.data.preprocessing import load_and_preprocess_data
+from src.models.failure_predictor import create_failure_predictor
+
+# Modify config as needed
+config.TEST_SIZE = 0.3
+config.CV_FOLDS = 10
+
+# Run pipeline
+X_train, X_test, y_train, y_test, preprocessor = load_and_preprocess_data(config)
+predictor = create_failure_predictor(config, preprocessor)
+```
+
+### Evaluate a Single Strategy
+
+```python
+from src.evaluation.metrics import cross_validate_model, evaluate_on_test
+
+# Get specific model
+model = predictor.get_strategy('BalancedRF')
+
+# Cross-validate
+cv_results = cross_validate_model(model, X_train, y_train)
+print(cv_results)
+
+# Test evaluation
+test_metrics, probs, preds = evaluate_on_test(
+    model, X_train, y_train, X_test, y_test
+)
+```
+
+## 🧪 Testing
+
+Run unit tests (when implemented):
+
 ```bash
-pip install -r requirements.txt
+python -m pytest tests/
 ```
 
-## Deactivating Virtual Environment
+## 📝 Notes
 
-When finished:
-```bash
-deactivate
-```
+- The original Jupyter notebook is preserved in `notebooks/` for reference
+- For production use, consider saving trained models with `joblib` or `pickle`
+- Threshold tuning is performed automatically based on `THRESHOLD_PREFERENCE`
+- All random operations use fixed seeds for reproducibility
 
-## Authors
+## 👥 Team
 
 MillMate G17 Team - ENGG2112
+
+## 📄 License
+
+[Add your license here]
+
+## 🙏 Acknowledgments
+
+Dataset: AI4I 2020 Predictive Maintenance Dataset

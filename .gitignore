@@ -1,30 +1,39 @@
-# Virtual Environment
-venv/
-env/
-ENV/
-
-# Jupyter Notebook
-.ipynb_checkpoints/
-*.ipynb_checkpoints
-
+cat > .gitignore << 'EOF'
 # Python
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
 .Python
+venv/
+env/
+ENV/
 
-# Data files (optional - depends if you want to commit data)
-*.csv
-data/
-
-# Output files
-failure_imbalance_comparison.csv
+# Jupyter
+.ipynb_checkpoints
+*.ipynb_checkpoints
 
 # IDE
 .vscode/
 .idea/
+*.swp
+*.swo
+
+# Outputs
+outputs/models/*
+outputs/results/*
+outputs/figures/*
+!outputs/.gitkeep
+
+# Data (optional - comment out if you want to track data)
+# data/*.csv
 
 # OS
 .DS_Store
 Thumbs.db
+EOF
+
+# Create .gitkeep files to track empty directories
+touch outputs/models/.gitkeep
+touch outputs/results/.gitkeep
+touch outputs/figures/.gitkeep
