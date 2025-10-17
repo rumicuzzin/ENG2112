@@ -1,4 +1,6 @@
-# ENG2112 - Machine Learning for Predictive Maintenance
+# ENG2112 - Machine Learning for Predictive Maintenanc
+
+My names Finn
 
 A structured Python implementation of machine learning models for predictive maintenance using the AI4I 2020 dataset. This project predicts machine failures using multiple classification strategies to handle extreme class imbalance.
 
